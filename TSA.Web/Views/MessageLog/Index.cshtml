@@ -1,0 +1,284 @@
+﻿@using TSA.Infrastructure.DTOs
+@model IEnumerable<MessageLogDTO>
+
+@{
+    ViewData["Title"] = "MessageLog";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .paging_simple_numbers {
+        float: right;
+    }
+</style>
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Message Log</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item active">Message Log</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Listado de Logs</h3>
+        </div>
+
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Fecha alta desde</td>
+                        <td>Fecha alta hasta</td>
+                        <td>Enviado</td>
+                        <td>Motivo</td>
+                        <td>Usuario</td>
+                    </tr>
+                    <tr>
+                        <td><input type="date" id="fechaDesde" name="fechaDesde" /></td>
+                        <td><input type="date" id="fechaHasta" name="fechaHasta" /></td>
+                        <td>
+                            <select name="estado" id="estado" class="form-control">
+                                <option value=""></option>
+                                <option value="Si">Si</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td><input type="text" id="motivo" name="motivo" /></td>
+                        <td><input type="text" id="sentTo" name="sentTo" /></td>
+                        <td><input type="submit" class="btn btn-secondary" value="Buscar" id="Save"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="test-registers" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Fecha de alta</th>
+                        <th>Fecha de envío</th>
+                        <th>Enviado</th>
+                        <th>Motivo</th>
+                        <th>Usuario</th>
+                        <td><b>Error de envío</b></td>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->
+@section Scripts{
+    <script src="~/lib/momentjs/moment.min.js" asp-append-version="true"></script>
+    <script src="~/lib/datetime-moment/datetime-moment.js" asp-append-version="true"></script>
+
+
+
+    <script>
+
+        var table;
+
+        $(document).ready(function () {
+            var responseStatus = "Test";
+            $.fn.dataTable.moment("DD/MM/YYYY HH:mm:ss");
+            $.fn.dataTable.moment("DD/MM/YYYY");
+
+            table = $("#test-registers").DataTable({
+                "initComplete": function (settings, json) {
+                    table.buttons().container().appendTo('#test-registers_wrapper .col-md-6:eq(0)');
+                },
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                },
+                // Design Assets
+                paging: true,
+                searching: true,
+                ordering: true,
+                orderMuli: false,
+                dom: '<"top"B>rt<"bottom"ip><"clear">',
+                info: true,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: true,
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: 'Copy',
+                        className: 'btn btn-secondary buttons-print',
+                        action: serverSideButtonAction
+                    },
+                    {
+                        extend: 'csv',
+                        text: 'CSV',
+                        className: 'btn btn-secondary buttons-print',
+                        action: serverSideButtonAction
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'btn btn-secondary buttons-print',
+                        action: serverSideButtonAction
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Print',
+                        className: 'btn btn-secondary buttons-print',
+                        action: serverSideButtonAction
+                    }
+                ],
+                stateSave: false,
+                autoWidth: true,
+                // ServerSide Setups
+                processing: true,
+                serverSide: true,
+                // Searching Setups
+                // Ajax Filter
+                ajax: {
+                    url: "LoadTable",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function (d) {
+                        return JSON.stringify(d);
+                    }
+                },
+                // Columns Setups
+                columns: [
+                    {
+                        data: "createdDate",
+                        searchable: true,
+                        render: function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                return moment(data).format("ddd DD/MM/YYYY HH:mm:ss");
+                            }
+                            // Otherwise the data type requested (`type`) is type detection or
+                            // sorting data, for which we want to use the raw date value, so just return
+                            // that, unaltered
+                            return data;
+
+                        }
+                    },
+                    {
+                        data: "sentDate",
+                        render: function (data, type, row) {
+                            if (data == null)
+                                return "";
+                            else if (type === "display" || type === "filter") {
+                                return moment(data).format("ddd DD/MM/YYYY HH:mm:ss");
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: "sent",
+                        render: function (data, type, row) {
+                            if (data === true) {
+                                return "Si";
+                            }
+                            return "No";
+                        }
+                    },
+                    { data: "subject" },
+                    { data: "sentTo" },
+                    { data: "errorReason" },
+                ],
+                // Column Definitions
+                columnDefs: [
+                    { targets: "no-sort", orderable: false },
+                    { targets: "no-search", searchable: true },
+                    {
+                        targets: "trim",
+                        render: function (data, type, full, meta) {
+                            if (type === "display") {
+                                data = strtrunc(data, 5);
+                            }
+                            return data;
+                        }
+                    },
+                ]
+            });
+
+
+            $('#Save').click(function () {
+                table.columns(0).search($('#fechaDesde').val().trim());
+                table.columns(1).search($('#fechaHasta').val().trim());
+                table.columns(2).search($('#estado').val().trim());
+                table.columns(3).search($('#motivo').val().trim());
+                table.columns(4).search($('#sentTo').val().trim());
+                table.draw();
+            });
+
+            function serverSideButtonAction(e, dt, node, config) {
+
+                var me = this;
+                var button = config.text.toLowerCase();
+                if (typeof $.fn.dataTable.ext.buttons[button] === "function") {
+                    button = $.fn.dataTable.ext.buttons[button]();
+                }
+                var len = dt.page.len();
+                var start = dt.page();
+                dt.page(0);
+
+                // Assim que ela acabar de desenhar todas as linhas eu executo a função do botão.
+                // ssb de serversidebutton
+                dt.context[0].aoDrawCallback.push({
+                    "sName": "ssb",
+                    "fn": function () {
+                        $.fn.dataTable.ext.buttons[button].action.call(me, e, dt, node, config);
+                        dt.context[0].aoDrawCallback = dt.context[0].aoDrawCallback.filter(function (e) { return e.sName !== "ssb" });
+                    }
+                });
+                dt.page.len(999999999).draw();
+                setTimeout(function () {
+                    dt.page(start);
+                    dt.page.len(len).draw();
+                }, 500);
+            }
+
+        });
+
+        function strtrunc(str, num) {
+            if (str.length > num) {
+                return str.slice(0, num) + "...";
+            }
+            else {
+                return str;
+            }
+        }
+
+    </script>
+}

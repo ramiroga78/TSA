@@ -1,0 +1,238 @@
+﻿@using TSA.Infrastructure.DTOs
+@model List<ProfileValueDTO>
+
+@{
+    ViewData["Title"] = "ProfileValue";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Profile Values</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Profile" asp-action="Index">Profile Types</a></li>
+                    <li class="breadcrumb-item active">Editar Profile Values</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Profile Type: <strong>@ViewBag.ProfileType.Description</strong></h3>
+        </div>
+        <div class="card-body">
+            @if (!Html.ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                    @Html.ValidationSummary()
+                </div>
+            }
+            @if (Context.User.Claims.Any(c => c.Type == "Profiles.Create" && c.Value == "True"))
+            {
+                <div class="col-12">
+                    <div class="float-right">
+                        <a asp-action="CreateProfileValue" asp-controller="Profile" asp-route-id="@ViewBag.ProfileType.Id" class="btn btn-success">Nuevo Profile Value</a>
+                    </div>
+                </div>
+            }
+            <table id="ProfileValueTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Values</th>
+                        @if (Context.User.Claims.Any(c => c.Type == "Profiles.Read" && c.Value == "True"))
+                        {
+                            <th class="text-center">Ver</th>
+                        }
+                        @if (Context.User.Claims.Any(c => c.Type == "Profiles.Update" && c.Value == "True"))
+                        {
+                            <th class="text-center">Editar</th>
+                        }
+                        @if (Context.User.Claims.Any(c => c.Type == "Profiles.Delete" && c.Value == "True"))
+                        {
+                            <th class="text-center">Borrar</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        @if (item.IsActive == true)
+                        {
+                            <tr>
+                                <td>@item.Value</td>
+                                @if (Context.User.Claims.Any(c => c.Type == "Profiles.Read" && c.Value == "True"))
+                                {
+                                    <td class="text-center">
+                                        <a asp-controller="Profile" asp-action="ViewProfileValues" asp-route-id="@item.Id" class="btn btn-info text-white" style="cursor:pointer">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                }
+                                @if (Context.User.Claims.Any(c => c.Type == "Profiles.Update" && c.Value == "True"))
+                                {
+                                    <td class="text-center">
+                                        <a asp-controller="Profile" asp-action="EditProfileValue" asp-route-id="@item.Id" class="btn btn-success text-white" style="cursor:pointer">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                    </td>
+                                }
+                                @if (Context.User.Claims.Any(c => c.Type == "Profiles.Delete" && c.Value == "True"))
+                                {
+                                    <td class="text-center">
+                                        <form method="post" asp-action="SoftDeleteAndSaveValue" asp-controller="Profile" asp-route-id="@item.Id">
+                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-default-@item.Id">
+                                                <i class="fa fa-solid fa-trash fa-xs"></i>
+                                            </button>
+                                            <div class="modal fade" id="modal-default-@item.Id">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Borrar Profile Value</h4>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body text-left">
+                                                            <p>&iquest;Est&aacute; seguro de borrar el Profile Value <strong>@item.Value</strong>?</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                                            <button type="submit" class="btn btn-success toastsDefaultSuccess">Aceptar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="form-group row">
+            <div class="col-12 text-center">
+                <a asp-action="Index" class="btn btn-secondary">Volver</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="toastsContainerTopRight" class="toasts-top-right fixed">
+</div>
+
+@section Scripts{
+    <script>
+
+        $(function () {
+            $("#ProfileValueTable").DataTable({
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                },
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": [
+                    {
+                        extend: "copy",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: "csv",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: "excel",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0]
+                        }
+                    },
+                    {
+                        extend: "print",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0]
+                        }
+                    }
+                ]
+            }).buttons().container().appendTo('#ProfileValueTable_wrapper .col-md-6:eq(0)');
+        });
+         $(document).ready(function () {
+            if ('@TempData["message"]' == "Deleted") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Profile Valule',
+                    subtitle: '',
+                    body: 'El Profile Value ha sido eliminado.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Profile Value',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+    </script>
+}

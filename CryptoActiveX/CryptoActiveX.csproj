@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B520220A-A0DA-4000-A6C8-3BDC973747B1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CryptoActiveX</RootNamespace>
+    <AssemblyName>CryptoActiveX</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>TestSignature.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Laboratorio %28ONTI%29|AnyCPU'">
+    <OutputPath>bin\Laboratorio %28ONTI%29\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\CryptoActiveX.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>FD.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FingerReader.cs" />
+    <Compile Include="ObjectSafety.cs" />
+    <Compile Include="PasswordDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasswordDialog.Designer.cs">
+      <DependentUpon>PasswordDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Security.Cryptography\AesCng.cs" />
+    <Compile Include="Security.Cryptography\AuthenticatedAes.cs" />
+    <Compile Include="Security.Cryptography\AuthenticatedAesCng.cs" />
+    <Compile Include="Security.Cryptography\AuthenticatedSymmetricAlgorithm.cs" />
+    <Compile Include="Security.Cryptography\BCryptAuthenticatedSymmetricAlgorithm.cs" />
+    <Compile Include="Security.Cryptography\BCryptAuthenticatedSymmetricCryptoTransform.cs" />
+    <Compile Include="Security.Cryptography\BCryptHMAC.cs" />
+    <Compile Include="Security.Cryptography\BCryptNative.cs" />
+    <Compile Include="Security.Cryptography\BCryptSymmetricAlgorithm.cs" />
+    <Compile Include="Security.Cryptography\BCryptSymmetricCryptoTransform.cs" />
+    <Compile Include="Security.Cryptography\BlockPaddingMethod.cs" />
+    <Compile Include="Security.Cryptography\CapiNative.cs" />
+    <Compile Include="Security.Cryptography\CngAlgorithm2.cs" />
+    <Compile Include="Security.Cryptography\CngChainingMode.cs" />
+    <Compile Include="Security.Cryptography\CngKeyExtensionMethods.cs" />
+    <Compile Include="Security.Cryptography\CngProvider2.cs" />
+    <Compile Include="Security.Cryptography\CngProviderCollection.cs" />
+    <Compile Include="Security.Cryptography\CngProviderExtensionMethods.cs" />
+    <Compile Include="Security.Cryptography\CryptoConfig2.cs" />
+    <Compile Include="Security.Cryptography\GlobalSuppressions.cs" />
+    <Compile Include="Security.Cryptography\HMACSHA256Cng.cs" />
+    <Compile Include="Security.Cryptography\HMACSHA384Cng.cs" />
+    <Compile Include="Security.Cryptography\HMACSHA512Cng.cs" />
+    <Compile Include="Security.Cryptography\IAuthenticatedCryptoTransform.cs" />
+    <Compile Include="Security.Cryptography\ICngAlgorithm.cs" />
+    <Compile Include="Security.Cryptography\ICngAsymmetricAlgorithm.cs" />
+    <Compile Include="Security.Cryptography\ICngSymmetricAlgorithm.cs" />
+    <Compile Include="Security.Cryptography\ICryptoTransform2.cs" />
+    <Compile Include="Security.Cryptography\NCryptNative.cs" />
+    <Compile Include="Security.Cryptography\Oid2.cs" />
+    <Compile Include="Security.Cryptography\Properties\Resources.Designer.cs" />
+    <Compile Include="Security.Cryptography\RNGCng.cs" />
+    <Compile Include="Security.Cryptography\RSACng.cs" />
+    <Compile Include="Security.Cryptography\RSAPKCS1SHA256SignatureDescription.cs" />
+    <Compile Include="Security.Cryptography\TripleDESCng.cs" />
+    <Compile Include="Security.Cryptography\Win32Native.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\SafeCertContextHandle.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509AlternateName.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509AlternateNameBlob.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509AlternateNameIPAddress.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509AlternateNameOther.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509AlternateNameString.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509Certificate2ExtensionMethods.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509CertificateCreationParameters.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509CertificateExtensionMethods.cs" />
+    <Compile Include="Security.Cryptography\X509Certificates\X509Native.cs" />
+    <Compile Include="Security.Cryptography\Xml\EncryptedXmlExtensionMethods.cs" />
+    <Compile Include="Security.Cryptography\Xml\TransformFactory.cs" />
+    <Compile Include="Security.Cryptography\Xml\XmlDsigNodeList.cs" />
+    <Compile Include="Security.Cryptography\Xml\XmlDsigXPathWithNamespacesTransform.cs" />
+    <Compile Include="Signer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FD.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Security.Cryptography\CustomDictionary.xml" />
+    <Content Include="Security.Cryptography\Security.Cryptography.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PasswordDialog.resx">
+      <DependentUpon>PasswordDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Security.Cryptography\Properties\Resources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CODE SIGNING.pfx" />
+    <None Include="TestSignature.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

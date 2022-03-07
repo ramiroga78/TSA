@@ -1,0 +1,245 @@
+﻿@model TSA.Infrastructure.ViewModels.CertificatesVM
+@{
+    ViewData["Title"] = "Ver Certificado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Certificado</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Certificates" asp-action="Index">Listado de Certificados</a></li>
+                    <li class="breadcrumb-item active">Ver Certificado</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Ver Certificado</h3>
+            </div>
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">General</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="Certificate.SerialNumber">Serial Number</label>
+                                    <input readonly type="text" name="Certificate.SerialNumber" id="Certificate.SerialNumber" asp-for="Certificate.SerialNumber" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-6 text-left">
+                                            <label>Default</label>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            @if (Model.Certificate.IsDefault == true)
+                                            {
+                                                <i class="far fa-check-square" style="color:blue"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-square" style="color:blue"></i>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card card-secondary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Issuer</h3>
+                                    </div>
+                                    <div class="card-body row">
+                                        @foreach (var item in Model.IssuersList)
+                                        {
+                                            @if (item.Value == Model.Certificate.IssuerId.ToString())
+                                            {
+                                                <input readonly type="text" name="Issuer" id="Issuer" class="form-control" value="@item.Text">
+                                            }
+                                        }
+                                        &nbsp;
+                                        <table class="table" id="issuertable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-md-6">Organizaci&oacute;n</th>
+                                                    <th class="col-md-6">Pais</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="normal">
+                                                    <td id="IssuerOrgValue" class="col-md-6"></td>
+                                                    <td id="IssuerCountryValue" class="col-md-6"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card card-secondary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Subject</h3>
+                                    </div>
+                                    <div class="card-body row">
+                                        @foreach (var item in Model.SubjectsList)
+                                        {
+                                            @if (item.Value == Model.Certificate.SubjectId.ToString())
+                                            {
+                                                <input readonly type="text" name="Subject" id="Subject" class="form-control" value="@item.Text">
+                                            }
+                                        }
+                                        &nbsp;
+                                        <table class="table" id="subjecttable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-md-6">Organizaci&oacute;n</th>
+                                                    <th class="col-md-6">Pais</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td id="SubjectOrgValue" class="col-md-6"></td>
+                                                    <td id="SubjectCountryValue" class="col-md-6"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Válido desde:</label>
+                                    <div class="input-group date" id="validfromdate" data-target-input="nearest">
+                                        <input readonly type="text" id="fromdate" name="fromdate" class="form-control datetimepicker-input" data-target="#validfromdate" value="@Model.Certificate.NotBefore.ToString("MM/dd/yyyy")" />
+                                        <div class="input-group-append" data-target="#validfromdate" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Válido hasta:</label>
+                                    <div class="input-group date" id="validtodate" data-target-input="nearest">
+                                        <input readonly type="text" id="todate" name="todate" class="form-control datetimepicker-input" data-target="#validtodate" value="@Model.Certificate.NotAfter.ToString("MM/dd/yyyy")" />
+                                        <div class="input-group-append" data-target="#validtodate" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Certificate.Thumbprint">Thumbprint</label>
+                                    <input readonly type="text" name="Certificate.Thumbprint" id="Certificate.Thumbprint" asp-for="Certificate.Thumbprint" class="form-control">
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card card-success">
+                            <div class="card-header">
+                                <h3 class="card-title">Profiles</h3>
+                            </div>
+                            <div class="card-body row">
+                                <table class="table" id="profilestable">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-6">Profile Name</th>
+                                            <th class="col-md-6">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 1; i < Model.Certificate.CertificateProfiles.Count() + 1; i++)
+                                        {
+                                            <tr id="profilestablerow[@i]">
+                                                <td class="col-md-6">
+                                                    @Model.Certificate.CertificateProfiles.ElementAt(i - 1).ProfileType.Description.ToString()
+                                                </td>
+                                                <td class="col-md-6">
+                                                    @Model.Certificate.CertificateProfiles.ElementAt(i - 1).ProfileValue.Value.ToString()
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <!-- /.card -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Policies</h3>
+                            </div>
+                            <div class="card-body row">
+                                <table class="table" id="policiestable">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-6">Policy Name</th>
+                                            <th class="col-md-6">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 1; i < Model.Certificate.CertificatePolicies.Count() + 1; i++)
+                                        {
+                                            <tr id="policiestablerow[@i]">
+                                                <td class="col-md-6">
+                                                    @Model.Certificate.CertificatePolicies.ElementAt(i - 1).PolicyType.Description.ToString()
+                                                </td>
+                                                <td class="col-md-6">
+                                                    @Model.Certificate.CertificatePolicies.ElementAt(i - 1).PolicyValue.ToString()
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script>
+
+        $(window).on("load", function () {
+            $.getJSON("/CertificateOrganization/LoadOrgDetails", { id: @Model.Certificate.IssuerId },
+                function (data) {
+                    $('#IssuerOrgValue').text(data.organizationName);
+                    $('#IssuerCountryValue').text(data.countryName);
+                    $('#issuertable').show();
+                });
+            $.getJSON("/CertificateOrganization/LoadOrgDetails", { id: @Model.Certificate.SubjectId },
+                function (data) {
+                    $('#SubjectOrgValue').text(data.organizationName);
+                    $('#SubjectCountryValue').text(data.countryName);
+                    $('#subjecttable').show();
+                });
+        });
+
+    </script>
+}

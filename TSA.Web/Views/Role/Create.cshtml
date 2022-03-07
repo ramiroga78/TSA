@@ -1,0 +1,111 @@
+﻿@model TSA.Infrastructure.DTOs.RoleDTO
+
+@{
+    ViewData["Title"] = "Crear Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Roles</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Role" asp-action="Index">Listado de Roles</a></li>
+                    <li class="breadcrumb-item active">Crear Role</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <form asp-page-handler="Create" method="post" id="quickForm">
+        <div class="card">
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="@Model.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="@Model.Name" name="name" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        &nbsp;
+                        <button type="submit" class="btn btn-success">Crear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts{
+    <script>
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Created") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Rol',
+                    subtitle: '',
+                    body: 'El Rol ha sido creado.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Rol',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 4
+                    },
+                },
+                messages: {
+                    name: {
+                        required: "Por favor, ingrese un Role",
+                        minlength: "Ingrese mínimo 4 letras"
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+
+    </script>
+}

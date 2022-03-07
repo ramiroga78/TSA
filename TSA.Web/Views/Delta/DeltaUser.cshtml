@@ -1,0 +1,157 @@
+﻿@using TSA.Infrastructure.DTOs
+@model List<DeltaUserDTO>
+
+@{
+    ViewData["Title"] = "Usuarios por Delta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Deltas</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Delta" asp-action="Index">Deltas</a></li>
+                    <li class="breadcrumb-item active">Listado de usuarios por Deltas</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Listado de usuarios por Deltas</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="col-12">
+                <div class="float-right">
+                    <a asp-action="CreateDeltaUser" asp-controller="Delta" asp-route-id="@ViewBag.DeltaUserId" class="btn btn-success">Agregar usuario</a>
+                </div>
+            </div>
+            <table id="DeltaUserTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Editar</th>
+                        <th>Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        if (item.IsActive == true)
+                        {
+                            <tr>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td class="text-center">
+                                    <a asp-action="EditDeltaUser" asp-controller="Delta" asp-route-id="@item.Id" class="btn btn-success text-white">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <form method="post" asp-action="DeleteDeltaUser" asp-controller="Delta" asp-route-id="@item.Id">
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-default-@item.Id">
+                                            <i class="fa fa-solid fa-trash fa-xs"></i>
+                                        </button>
+                                        <div class="modal fade" id="modal-default-@item.Id">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title">Borrar Usuario</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-left">
+                                                        <p>¿Está seguro de quitar al Usuario?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-success toastsDefaultSuccess">Aceptar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->
+
+@section Scripts{
+    <script>
+        $(function () {
+            $("#DeltaUserTable").DataTable({
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                },
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print"]
+            }).buttons().container().appendTo('#DeltaUserTable_wrapper .col-md-6:eq(0)');
+        });
+        $(document).ready(function () {
+            if ('@TempData["message"]' == "Deleted") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Usuario de Delta',
+                    subtitle: '',
+                    body: 'El usuario ha sido eliminado.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Edited") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Usuario de Delta',
+                    subtitle: '',
+                    body: 'El usuario ha sido editado.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+    </script>
+}

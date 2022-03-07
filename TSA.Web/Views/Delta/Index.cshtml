@@ -1,0 +1,318 @@
+﻿@using TSA.Infrastructure.DTOs
+@model List<DeltaDTO>
+
+@{
+    ViewData["Title"] = "Deltas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Deltas</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item active">Deltas</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Deltas de Eventos</h3>
+        </div>
+
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="DeltaTableEvent" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th class="text-center">Usuarios</th>
+                        <th class="text-center">Detiene Servicio</th>
+                        <th class="text-center">Manage Users</th>
+                        <th class="text-center">Manage Settings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        @if (item.IsActive == true)
+                        {
+                            @if (item.DeltaTypeId == 1)
+                            {
+                                <tr>
+                                    <td>@item.EventName</td>
+                                    <td>@item.EventDescription</td>
+                                    <td class="text-center">@item.UserCount</td>
+                                    @if (item.StopService == false)
+                                    {
+                                        <td class="text-center">NO</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center">SI</td>
+                                    }
+                                    <td class="text-center">
+                                        <a asp-controller="Delta" asp-action="DeltaUser" asp-route-id="@item.Id">
+                                            <i class="fas fa-users"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-controller="Delta" asp-action="DeltaSetting" asp-route-id="@item.Id">
+                                            <i class="fas fa-cog"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Deltas de CONTROL</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="DeltaTableControl" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th class="text-center">Operador</th>
+                        <th class="text-center">Valor</th>
+                        <th class="text-center">Usuarios</th>
+                        <th class="text-center">Detiene Servicio</th>
+                        <th class="text-center">Manage Users</th>
+                        <th class="text-center">Manage Settings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        @if (item.IsActive == true)
+                        {
+                            @if (item.DeltaTypeId == 2)
+                            {
+                                <tr>
+                                    <td>@item.ControlName</td>
+                                    <td class="text-center">@item.ControlOperator</td>
+                                    <td class="text-center">@item.ControlOperatorValue</td>
+                                    <td class="text-center">@item.UserCount</td>
+                                    @if (item.StopService == false)
+                                    {
+                                        <td class="text-center">NO</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center">SI</td>
+                                    }
+                                    <td class="text-center">
+                                        <a asp-controller="Delta" asp-action="DeltaUser" asp-route-id="@item.Id">
+                                            <i class="fas fa-users"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-controller="Delta" asp-action="DeltaSetting" asp-route-id="@item.Id">
+                                            <i class="fas fa-cog"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+</section>
+<!-- /.content -->
+
+@section Scripts{
+    <script>
+
+        $(function () {
+            $("#DeltaTableEvent").DataTable({
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                },
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": [
+                    {
+                        extend: "copy",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    {
+                        extend: "csv",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    {
+                        extend: "excel",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    {
+                        extend: "print",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0, 1, 2, 3]
+                        }
+                    }
+                ]
+            }).buttons().container().appendTo('#DeltaTableEvent_wrapper .col-md-6:eq(0)');
+        });
+        $(function () {
+            $("#DeltaTableControl").DataTable({
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                },
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": [
+                    {
+                        extend: "copy",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    {
+                        extend: "csv",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    {
+                        extend: "excel",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    {
+                        extend: "print",
+                        exportOptions: {
+                            modifier: {
+                                order: 'applied', // 'current', 'applied','index', 'original'
+                                page: 'all', // 'all', 'current'
+                                search: 'applied' // 'none', 'applied', 'removed'
+                            },
+                            columns: [0, 1, 2, 3]
+                        }
+                    }
+                ]
+            }).buttons().container().appendTo('#DeltaTableControl_wrapper .col-md-6:eq(0)');
+        });
+        $(document).ready(function () {
+            if ('@TempData["message"]' == "Deleted") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Delta',
+                    subtitle: '',
+                    body: 'La Delta ha sido eliminado.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+    </script>
+}

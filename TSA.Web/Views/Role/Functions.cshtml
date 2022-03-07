@@ -1,0 +1,139 @@
+﻿@using TSA.Infrastructure.DTOs
+@model List<RoleFunctionDTO>
+
+@{
+    ViewData["Title"] = "Funciones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Funciones</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Role" asp-action="Index">Listado de Roles</a></li>
+                    <li class="breadcrumb-item active">Editar funciones</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Funciones del Rol: <strong>@ViewBag.Role.Name</strong></h3>
+        </div>
+        <form asp-page-handler="Create" method="post">
+        </form>
+        <div class="card-body">
+            @if (!Html.ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+                    @Html.ValidationSummary()
+                </div>
+            }
+            <form asp-page-handler="Functions" method="post">
+                @if (Context.User.Claims.Any(c => c.Type == "Roles.Update" && c.Value == "True"))
+                {
+                    <div class="float-right">
+                        <input type="checkbox" id="select-all">
+                        <label>Seleccionar todos</label>
+                    </div>
+                }
+                else
+                {
+                    <input hidden type="checkbox" id="select-all">
+                }
+                <table id="FunctionsTable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th width="40%">Funciones</th>
+                            <th width="15%" class="text-center">Ver</th>
+                            <th width="15%" class="text-center">Crear</th>
+                            <th width="15%" class="text-center">Editar</th>
+                            <th width="15%" class="text-center">Borrar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                        <tr>
+                            <td width="40%">
+                                @Model[i].FunctionName
+                                <input type="hidden" asp-for=@(Model[i].FunctionId) />
+                                <input type="hidden" asp-for=@(Model[i].RoleId) />
+                            </td>
+                            @if (Context.User.Claims.Any(c => c.Type == "Roles.Update" && c.Value == "True"))
+                            {
+                                <td width="15%" class="text-center">@Html.CheckBoxFor(model => Model[i].Read)</td>
+                                <td width="15%" class="text-center">@Html.CheckBoxFor(model => Model[i].Create)</td>
+                                <td width="15%" class="text-center">@Html.CheckBoxFor(model => Model[i].Update)</td>
+                                <td width="15%" class="text-center">@Html.CheckBoxFor(model => Model[i].Delete)</td>
+                            }
+                            else
+                            {
+                                <td width="15%" class="text-center">
+                                    @if (@Model[i].Read)
+                                    {
+                                    <i class="fas fa-check" style="color:blue"></i>
+                                    }
+                                </td>
+                                <td width="15%" class="text-center">
+                                    @if (@Model[i].Create)
+                                    {
+                                    <i class="fas fa-check" style="color:blue"></i>
+                                    }
+                                </td>
+                                <td width="15%" class="text-center">
+                                    @if (@Model[i].Update)
+                                    {
+                                    <i class="fas fa-check" style="color:blue"></i>
+                                    }
+                                </td>
+                                <td width="15%" class="text-center">
+                                    @if (@Model[i].Delete)
+                                    {
+                                    <i class="fas fa-check" style="color:blue"></i>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        &nbsp;
+                        @if (Context.User.Claims.Any(c => c.Type == "Roles.Update" && c.Value == "True"))
+                        {
+                            <button type="submit" class="btn btn-success">Guardar</button>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<div id="toastsContainerTopRight" class="toasts-top-right fixed">
+</div>
+
+@section Scripts{
+    <script>
+
+        document.getElementById('select-all').onclick = function () {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        }
+
+    </script>
+}

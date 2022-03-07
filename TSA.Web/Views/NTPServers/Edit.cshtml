@@ -1,0 +1,125 @@
+﻿@model TSA.Infrastructure.DTOs.NTPServerDTO;
+@{
+    ViewData["Title"] = "Editar Servidor NTP";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Servidor NTP</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="NTPServers" asp-action="Index">Listado de Servidores NTP</a></li>
+                    <li class="breadcrumb-item active">Editar Servidor NTP</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <form method="post" asp-action="Edit" id="edit">
+        <input type="hidden" asp-for="Id" />
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Editar Servidor NTP</h3>
+            </div>
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="ServerUrl"></label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" name="ServerUrl" id="ServerUrl" placeholder="Ingrese la IP o FQDN" asp-for="ServerUrl" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary" asp-route-id="@Model.Id">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts{
+    <script>
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Edited") {
+                $(document).Toasts('create', {
+                class: 'bg-success',
+                title: 'Servidor NTP',
+                subtitle: 'Edición',
+                body: 'El Servidor NTP ha sido editado.',
+                autohide: true,
+                delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Servidor NTP',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+        $.validator.addMethod(
+            "regex",
+            function (value, element, regexp) {
+                if (regexp.constructor != RegExp)
+                    regexp = new RegExp(regexp);
+                else if (regexp.global)
+                    regexp.lastIndex = 0;
+                return this.optional(element) || regexp.test(value);
+            }, "Por favor ingrese una IP o FQDN válido"
+        );
+
+        $(function () {
+            $('#edit').validate({
+                rules: {
+                    'ServerUrl': {
+                        required: true,
+                        "regex": /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/
+                    }
+                },
+                messages: {
+                    'ServerUrl': {
+                        required: "Por favor ingrese la IP o FQDN del Servidor"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    error.insertAfter(element.closest('input'));
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                    $(element).addClass('is-valid');
+                }
+            });
+        });
+
+    </script>
+}

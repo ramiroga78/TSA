@@ -1,0 +1,157 @@
+﻿@model TSA.Infrastructure.DTOs.DeltaDTO
+
+@{
+    ViewData["Title"] = "Seteo de Deltas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Seteo de Deltas</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Delta" asp-action="Index">Listado de Deltas</a></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <form asp-controller="Delta" asp-action="DeltaSetting" method="post" id="quickForm">
+        <div class="card">
+            <div class="card-header">
+                @if (Model.DeltaTypeId == 1)
+                {
+                    <h5 class="card-text">Tipo: Eventos</h5>
+                    <h5 class="card-text">Nombre: @Model.EventName</h5>
+                }
+                else
+                {
+                    <h5 class="card-text">Delta de Control</h5>
+                    <h5 class="card-title">@Model.ControlName</h5>
+                }
+            </div>
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                @if (Model.DeltaTypeId == 1)
+                {
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label>Detiene Servicio</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" asp-for="@Model.StopService" name="StopService" data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                            <input type="hidden" name="@Model.StopService" value="false" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label>Detiene Servicio</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="checkbox" asp-for="@Model.StopService" name="StopService" data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                            <input type="hidden" name="@Model.StopService" value="false" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label> Operador</label>
+                        </div>
+                        <div class="col-8">
+                            <select asp-for="@Model.ControlOperator" name="ControlOperator" class="form-control">
+                                <option value="=">&#61</option>
+                                <option value="<">&#60</option>
+                                <option value="<=">&#60&#61</option>
+                                <option value=">">&#62</option>
+                                <option value=">=">&#62&#61</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label> Valor</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="number" asp-for="@Model.ControlOperatorValue" name="ControlOperatorValue" class="form-control">
+                        </div>
+                    </div>
+                }
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="Index" asp-controller="Delta" class="btn btn-secondary">Cancelar</a>
+                        &nbsp;
+                        <button type="submit" class="btn btn-success">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts{
+    <script>
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Edited") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Setelo de Deltas',
+                    subtitle: '',
+                    body: 'La Delta a sido actualizada.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Setelo de Deltas',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    UserId: {
+                        required: true
+                    },
+                },
+                messages: {
+                    UserId: {
+                        required: "Seleccione una opción"
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    error.insertAfter(element.closest(element));
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+    </script>
+}

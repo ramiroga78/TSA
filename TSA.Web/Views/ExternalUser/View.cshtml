@@ -1,0 +1,53 @@
+﻿@model TSA.Infrastructure.DTOs.ExternalUserDTO
+@{
+    ViewData["Title"] = "Usuario Externo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Usuarios Externos</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="ExternalUser" asp-action="Index">Listado de Usuarios Externos</a></li>
+                    <li class="breadcrumb-item active">Ver Usuario Externo</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Ver Usuario Externo</h3>
+        </div>
+        <div class="card-body">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="@Model.Name"></label>
+                </div>
+                <div class="col-8">
+                    <input readonly type="text" name="@Model.Name" id="@Model.Name" placeholder="Ingrese el Nombre" asp-for="@Model.Name" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="@Model.Email"></label>
+                </div>
+                <div class="col-8">
+                    <input readonly type="email" name="User.Email" id="@Model.Email" placeholder="Ingrese el Email" asp-for="@Model.Email" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-12 text-center">
+                    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

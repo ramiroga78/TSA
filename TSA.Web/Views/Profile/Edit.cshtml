@@ -1,0 +1,114 @@
+﻿@model TSA.Infrastructure.DTOs.ProfileTypeDTO
+
+@{
+    ViewData["Title"] = "Editar ProfileType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Profiles</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Profile" asp-action="Index">Listado de Profiles Type</a></li>
+                    <li class="breadcrumb-item active">Editar Profile Type</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <form asp-page-handler="Edit" method="post" id="quickForm">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Editar Profile Type</h3>
+            </div>
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="@Model.Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="@Model.Description" name="Description" class="form-control" placeholder="Ingrese la Descripción">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        &nbsp;
+                        <button type="submit" class="btn btn-success">Editar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts{
+    <script>
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Edited") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Profile Type',
+                    subtitle: '',
+                    body: 'El Profile Type ha sido editado.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Profile Type',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+            $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 4
+                    },
+                },
+                messages: {
+                    name: {
+                        required: "Por favor, ingrese un Profile Type",
+                        minlength: "Ingrese mínimo 4 letras"
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+
+    </script>
+}

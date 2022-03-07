@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bienvenido</h1>
+</div>
+
+@section Scripts{
+    <script>
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'ERROR',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "PasswordChanged") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Ususario',
+                    subtitle: 'Error',
+                    body: 'La contraseña ha sido actualizada.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+    </script>
+}

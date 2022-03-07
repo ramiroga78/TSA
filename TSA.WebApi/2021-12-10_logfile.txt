@@ -1,0 +1,16 @@
+2021-12-10 07:31:56.9457 ERROR Error saving logRequest: Object reference not set to an instance of an object.
+2021-12-10 10:46:55.9092 ERROR Error saving logRequest: Object reference not set to an instance of an object.
+2021-12-10 10:58:32.4010 ERROR Error saving logRequest: Object reference not set to an instance of an object.
+2021-12-10 10:58:40.2214 ERROR Error saving logRequest: Object reference not set to an instance of an object.
+2021-12-10 10:59:27.9337 ERROR Error saving logRequest: Object reference not set to an instance of an object.
+2021-12-10 10:59:36.6425 ERROR Error saving logRequest: Object reference not set to an instance of an object.
+2021-12-10 11:26:43.6679 ERROR Error Message: Object reference not set to an instance of an object.
+InnerException: 
+Logger Lines Exception: 
+receiving request.body
+converting to TimeStampRequest
+openning X509Store
+getting all certificates from repository
+initializating certificate
+
+

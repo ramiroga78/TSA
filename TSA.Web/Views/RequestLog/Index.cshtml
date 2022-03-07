@@ -1,0 +1,323 @@
+﻿@using TSALibrary.Models
+@model IEnumerable<RequestLog>
+
+@{
+    ViewData["Title"] = "RequestLog";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .paging_simple_numbers {
+        float: right;
+    }
+</style>
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Request Log</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item active">Request Log</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Listado de Logs</h3>
+        </div>
+        <input type="text" id="ClientIp" name="ClientIp" hidden />
+        <input type="text" id="ExternalUser" name="ExternalUser" hidden />
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Response Status</td>
+                        <td>Fecha desde Request</td>
+                        <td>Fecha hasta Request</td>
+                        <td>Policy</td>
+                        <td>Código de Error</td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="txtResponseStatus" name="txtResponseStatus" /></td>
+                        <td><input type="date" id="fechaDesde" name="fechaDesde" /></td>
+                        <td><input type="date" id="fechaHasta" name="fechaHasta" /></td>
+                        <td><input type="text" id="txtPolicyValue" name="txtPolicyValue" /></td>
+                        <td><input type="text" id="errorCode" name="errorCode" /></td>
+                        <td><input type="submit" class="btn btn-secondary" value="Buscar" id="Save"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="test-registers" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Response Status</th>
+                        <th>Request Time</th>
+                        <th>Response Time</th>
+                        <th>Policy</th>
+                        <th>Request/Response</th>
+                        <th>TSA Certificate</th>
+                        <th>Error code</th>
+                        <th>IP Cliente</th>
+                        <th>Usuario</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->
+@section Scripts{
+    <script src="~/lib/momentjs/moment.min.js" asp-append-version="true"></script>
+    <script src="~/lib/datetime-moment/datetime-moment.js" asp-append-version="true"></script>
+
+
+
+    <script>
+
+        var table;
+
+        $(document).ready(function () {
+            var responseStatus = "Test";
+            $.fn.dataTable.moment("DD/MM/YYYY HH:mm:ss");
+            $.fn.dataTable.moment("DD/MM/YYYY");
+
+            table = $("#test-registers").DataTable({
+                "initComplete": function (settings, json) {
+                    table.buttons().container().appendTo('#test-registers_wrapper .col-md-6:eq(0)');
+                },
+                "language": {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+                    "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Entradas",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    }
+                },
+                // Design Assets
+                paging: true,
+                searching: true,
+                ordering: true,
+                order: [[1, "desc"]],
+                orderMuli: false,
+                dom: '<"top"B>rt<"bottom"ip><"clear">',
+                info: true,
+                responsive: true,
+                lengthChange: true,
+                autoWidth: true,
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: 'Copy',
+                        className: 'btn btn-secondary buttons-print',
+                        action: serverSideButtonAction
+                    },
+                    {
+                        extend: 'csv',
+                        text: 'CSV',
+                        className: 'btn btn-secondary buttons-print',
+                        action: serverSideButtonAction
+                    },
+                    {
+                        extend: 'excel',
+                        text: 'Excel',
+                        className: 'btn btn-secondary buttons-print',
+                        action: serverSideButtonAction
+                    },
+                    {
+                        extend: 'print',
+                        text: 'Print',
+                        className: 'btn btn-secondary buttons-print',
+                        action: serverSideButtonAction
+                    }
+                ],
+                stateSave: false,
+                autoWidth: true,
+                // ServerSide Setups
+                processing: true,
+                serverSide: true,
+                // Searching Setups
+                // Ajax Filter
+                ajax: {
+                    url: "LoadTable",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: function (d) {
+                        console.log(JSON.stringify(d));
+                        return JSON.stringify(d);
+                    }
+                },
+                // Columns Setups
+                columns: [
+                    {
+                        data: "responseStatusDescription"
+                    },
+                    {
+                        data: "requestDate",
+                        searchable: true,
+                        render: function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                return moment(data).format("ddd DD/MM/YYYY HH:mm:ss");
+                            }
+                            // Otherwise the data type requested (`type`) is type detection or
+                            // sorting data, for which we want to use the raw date value, so just return
+                            // that, unaltered
+                            return data;
+
+                        }
+                    },
+                    {
+                        data: "responseDate",
+                        render: function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                return moment(data).format("ddd DD/MM/YYYY HH:mm:ss");
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: "policyValue"
+                    },
+                    {
+                        data: null,
+                        defaultContent: "<a class='btn btn-link' role='button' onclick='request(this)'>Request</a> <a class='btn btn-link' role='button' onclick='response(this)'>Response</a>",
+                        orderable: false
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row) {
+                            if (data.responseStatusDescription != "Operation Okay") //Check column value "Operation Okay"
+                                return ""; //Empty cell content
+                            else
+                                return "<a class='btn btn-link' role='button' onclick='certificate(this)'>Ver</a>"
+                        },
+                        orderable: false
+                    },
+                    {
+                        data: "httpErrorDescription"
+                    },
+                    {
+                        data: "clientIp",
+                        defaultContent: ""
+                    },
+                    {
+                        data: "externalUser",
+                        defaultContent: ""
+                    }
+                ],
+                // Column Definitions
+                columnDefs: [
+                    { targets: "no-sort", orderable: false },
+                    { targets: "no-search", searchable: true },
+                    {
+                        targets: "trim",
+                        render: function (data, type, full, meta) {
+                            if (type === "display") {
+                                data = strtrunc(data, 5);
+                            }
+                            return data;
+                        }
+                    },
+                ]
+            });
+
+
+            $('#Save').click(function () {
+                table.columns(0).search($('#txtResponseStatus').val().trim());
+                table.columns(1).search($('#fechaDesde').val().trim());
+                table.columns(2).search($('#fechaHasta').val().trim());
+                table.columns(3).search($('#txtPolicyValue').val().trim());
+                table.columns(6).search($('#errorCode').val().trim());
+                table.columns(7).search($('#ClientIp').val().trim());
+                table.columns(8).search($('#ExternalUser').val().trim());
+                table.draw();
+            });
+
+            function serverSideButtonAction(e, dt, node, config) {
+
+                var me = this;
+                var button = config.text.toLowerCase();
+                if (typeof $.fn.dataTable.ext.buttons[button] === "function") {
+                    button = $.fn.dataTable.ext.buttons[button]();
+                }
+                var len = dt.page.len();
+                var start = dt.page();
+                dt.page(0);
+
+                // Assim que ela acabar de desenhar todas as linhas eu executo a função do botão.
+                // ssb de serversidebutton
+                dt.context[0].aoDrawCallback.push({
+                    "sName": "ssb",
+                    "fn": function () {
+                        $.fn.dataTable.ext.buttons[button].action.call(me, e, dt, node, config);
+                        dt.context[0].aoDrawCallback = dt.context[0].aoDrawCallback.filter(function (e) { return e.sName !== "ssb" });
+                    }
+                });
+                dt.page.len(999999999).draw();
+                setTimeout(function () {
+                    dt.page(start);
+                    dt.page.len(len).draw();
+                }, 500);
+            }
+
+        });
+
+        function request(rowContext) {
+            if (table) {
+                var data = table.row($(rowContext).parents("tr")).data();
+                window.open('../RequestLog/Request/' + data["id"], '_blank');
+            }
+        }
+        function response(rowContext) {
+            if (table) {
+                var data = table.row($(rowContext).parents("tr")).data();
+                window.open('../RequestLog/Response/' + data["id"], '_blank');
+            }
+        }
+        function certificate(rowContext) {
+            if (table) {
+                var data = table.row($(rowContext).parents("tr")).data();
+                window.open('../Certificates/View/' + data["certificateId"], '_blank');
+            }
+        }
+
+        function strtrunc(str, num) {
+            if (str.length > num) {
+                return str.slice(0, num) + "...";
+            }
+            else {
+                return str;
+            }
+        }
+
+    </script>
+}

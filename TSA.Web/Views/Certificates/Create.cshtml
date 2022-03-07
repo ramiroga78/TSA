@@ -1,0 +1,566 @@
+﻿@using TSALibrary.Models
+@model TSA.Infrastructure.ViewModels.CertificatesVM
+@{
+    ViewData["Title"] = "Crear Certificado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Certificado</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Certificates" asp-action="Index">Listado de Certificados</a></li>
+                    <li class="breadcrumb-item active">Crear Certificado</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <form method="post" asp-action="Create" id="create">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Crear Certificado</h3>
+            </div>
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">General</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label asp-for="Certificate.SerialNumber">Serial Number</label>
+                                    <input type="text" name="Certificate.SerialNumber" id="Certificate.SerialNumber" asp-for="Certificate.SerialNumber" class="form-control" placeholder="Ingrese el Serial Number">
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-6 text-left">
+                                            <label>Default</label>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <input type="checkbox" id="Certificate.IsDefault" name="Certificate.IsDefault" value="true" data-bootstrap-switch data-off-color="danger" data-on-color="success">
+                                            <input type="hidden" name="Certificate.IsDefault" value="false" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card card-secondary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Issuer</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <select name="Certificate.IssuerId" id="Certificate.IssuerId" asp-for="Certificate.IssuerId" class="form-control">
+                                            <option value="">Seleccione un Issuer</option>
+                                            @foreach (var item in Model.IssuersList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        </select>
+                                        &nbsp;
+                                        <table class="table" id="issuertable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-md-6">Organizaci&oacute;n</th>
+                                                    <th class="col-md-6">Pais</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="normal">
+                                                    <td id="IssuerOrgValue" class="col-md-6"></td>
+                                                    <td id="IssuerCountryValue" class="col-md-6"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card card-secondary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Subject</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <select name="Certificate.SubjectId" id="Certificate.SubjectId" asp-for="Certificate.SubjectId" class="form-control">
+                                            <option value="">Seleccione un Subject</option>
+                                            @foreach (var item in Model.SubjectsList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        </select>
+                                        &nbsp;
+                                        <table class="table" id="subjecttable">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-md-6">Organizaci&oacute;n</th>
+                                                    <th class="col-md-6">Pais</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="normal">
+                                                    <td id="SubjectOrgValue" class="col-md-6"></td>
+                                                    <td id="SubjectCountryValue" class="col-md-6"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Válido desde:</label>
+                                    <div class="input-group date" id="validfromdate" data-target-input="nearest">
+                                        <input type="text" id="fromdate" name="fromdate" class="form-control datetimepicker-input" data-target="#validfromdate" placeholder="MM/DD/YYYY" />
+                                        <div class="input-group-append" data-target="#validfromdate" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Válido hasta:</label>
+                                    <div class="input-group date" id="validtodate" data-target-input="nearest">
+                                        <input type="text" id="todate" name="todate" class="form-control datetimepicker-input" data-target="#validtodate" placeholder="MM/DD/YYYY" />
+                                        <div class="input-group-append" data-target="#validtodate" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="Certificate.Thumbprint">Thumbprint</label>
+                                    <input type="text" name="Certificate.Thumbprint" id="Certificate.Thumbprint" asp-for="Certificate.Thumbprint" class="form-control" placeholder="Ingrese el Thumbprint">
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card card-success">
+                            <div class="card-header">
+                                <h3 class="card-title">Profiles</h3>
+                            </div>
+                            <div class="card-body row">
+                                <div class="col-md-12">
+                                    <input hidden name="profileadded" id="profileadded" value="">
+                                </div>
+                                <div class="col-md-5">
+                                    <select name="selectprofile" id="selectprofile" class="form-control">
+                                        <option value="">Seleccione un Profile</option>
+                                        @foreach (var item in Model.ProfilesTypesList)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <select name="selectprofilevalue" id="selectprofilevalue" class="form-control">
+                                        <option value="">Seleccione un Valor</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" id="addprofileandvalue" class="btn btn-block btn-info btn-sm">Agregar</button>
+                                </div>
+                                <table hidden class="table" id="profilestable">
+                                    <thead>
+                                        <tr>
+                                            <th>Profile Name</th>
+                                            <th>Value</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <!-- /.card -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Policies</h3>
+                            </div>
+                            <div class="card-body row">
+                                <div class="col-md-12">
+                                    <input hidden name="policyadded" id="policyadded" value="">
+                                </div>
+                                <div class="card-body row">
+                                    <div class="col-md-6">
+                                        <select name="selectpolicy" id="selectpolicy" class="form-control">
+                                            <option value="">Seleccione una Policy</option>
+                                            @foreach (var item in Model.PoliciesTypesList)
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" name="policyvalue" id="policyvalue" placeholder="Ingrese un valor" class="form-control">
+                                    </div>
+                                </div>
+                                &nbsp;
+                                <div class="col-md-5 text-center">
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <button type="button" id="addpolicyandvalue" class="btn btn-block btn-info btn-sm">Agregar</button>
+                                </div>
+                                <div class="col-md-5 text-center">
+                                </div>
+                                <table hidden class="table" id="policiestable">
+                                    <thead>
+                                        <tr>
+                                            <th>Policy Name</th>
+                                            <th>Value</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        &nbsp;
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts{
+    <script>
+    var profilescounter = 1;
+    var policiescounter = 1;
+
+    $(document).ready(function () {
+        jQuery.validator.addMethod("mayorQue",
+            function (value, element, params) {
+
+                if (!/Invalid|NaN/.test(new Date(value))) {
+                    return new Date(value) > new Date($(params).val());
+                }
+
+                return isNaN(value) && isNaN($(params).val())
+                    || (Number(value) > Number($(params).val()));
+            }, 'Must be greater than {0}.');
+
+        $("#selectprofile").change(function () {
+            var profileTypeId = $(this).val();
+            $.getJSON("/Certificates/LoadProfilesValues", { profileTypeId: profileTypeId },
+                function (data) {
+                    var select = $("#selectprofilevalue");
+                    select.empty();
+                    select.append($('<option/>', {
+                        value: '',
+                        text: "Seleccione un Valor"
+                    }));
+                    $.each(data, function () {
+                        select.append('<option value="' + this.id + '">' + this.value + '</option>');
+                    });
+                });
+        });
+        $("#Certificate\\.IssuerId").change(function () {
+            var issuerId = $(this).val();
+            if (issuerId != '') {
+                $.getJSON("/CertificateOrganization/LoadOrgDetails", { id: issuerId },
+                    function (data) {
+                        $('#IssuerOrgValue').text(data.organizationName);
+                        $('#IssuerCountryValue').text(data.countryName);
+                        $('#issuertable').show();
+                    });
+            }
+            else {
+                $('#issuertable').hide();
+            };
+        });
+        $("#Certificate\\.SubjectId").change(function () {
+            var subjectId = $(this).val();
+            if (subjectId != '') {
+                $.getJSON("/CertificateOrganization/LoadOrgDetails", { id: subjectId },
+                    function (data) {
+                        $('#SubjectOrgValue').text(data.organizationName);
+                        $('#SubjectCountryValue').text(data.countryName);
+                        $('#subjecttable').show();
+                    });
+            }
+            else {
+                $('#subjecttable').hide();
+            };
+        });
+    });
+
+    $(window).on("load", function () {
+        $('#validtodate').datetimepicker({
+            format: 'L'
+        })
+        $('#validfromdate').datetimepicker({
+            format: 'L'
+        })
+        $('#issuertable').hide();
+        $('#subjecttable').hide();
+        if ('@TempData["message"]' == "Created") {
+            $(document).Toasts('create', {
+                class: 'bg-success',
+                title: 'Certificado',
+                subtitle: 'Creación',
+                body: 'El Certificado ha sido creado.',
+                autohide: true,
+                delay: 3000
+            })
+        }
+        if ('@TempData["message"]' == "Error") {
+            $(document).Toasts('create', {
+                class: 'bg-danger',
+                title: 'Certificado',
+                subtitle: 'Error',
+                body: 'Ha ocurrido un error al procesar la solicitud.',
+                autohide: true,
+                delay: 3000
+            })
+        }
+    });
+
+    $(function () {
+        $('#create').validate({
+            ignore: "",
+            rules: {
+                'Certificate.SerialNumber': {
+                    required: true,
+                },
+                'Certificate.IssuerId': {
+                    required: true,
+                },
+                'Certificate.SubjectId': {
+                    required: true,
+                },
+                'fromdate': {
+                    required: true,
+                },
+                'todate': {
+                    required: true,
+                    mayorQue: '#fromdate',
+                },
+                'Certificate.Thumbprint': {
+                    required: true,
+                },
+                'profileadded': {
+                    required: true,
+                },
+                'selectprofile': {
+                    required: {
+                        depends: function (element) {
+                            return document.getElementById('profileadded').value == "";
+                        }
+                    }
+                },
+                'selectprofilevalue': {
+                    required: {
+                        depends: function (element) {
+                            return document.getElementById('profileadded').value == "";
+                        }
+                    }
+                },
+                'policyadded': {
+                    required: true,
+                },
+                'selectpolicy': {
+                    required: {
+                        depends: function (element) {
+                            return document.getElementById('policyadded').value == "";
+                        }
+                    }
+                },
+                'policyvalue': {
+                    required: {
+                        depends: function (element) {
+                            return document.getElementById('policyadded').value == "";
+                        }
+                    }
+                }
+            },
+            messages: {
+                'Certificate.SerialNumber': {
+                    required: 'Por favor ingrese el Serial Number'
+                },
+                'Certificate.IssuerId': {
+                    required: 'Por favor seleccione un Issuer'
+                },
+                'Certificate.SubjectId': {
+                    required: 'Por favor seleccione un Subject'
+                },
+                'fromdate': {
+                    required: 'Por favor ingrese una fecha'
+                },
+                'todate': {
+                    required: 'Por favor ingrese una fecha',
+                    mayorQue: 'V&aacute;lido Hasta debe ser mayor a V&aacute;lido Desde'
+                },
+                'Certificate.Thumbprint': {
+                    required: 'Por favor ingrese un Thmbprint'
+                },
+                'profileadded': {
+                    required: 'Por favor ingrese un Profile'
+                },
+                'selectprofile': {
+                    required: 'Por favor seleccione un Profile'
+                },
+                'selectprofilevalue': {
+                    required: 'Por favor seleccione un Valor'
+                },
+                'policyadded': {
+                    required: 'Por favor ingrese una Policy'
+                },
+                'selectpolicy': {
+                    required: 'Por favor seleccione una Policy'
+                },
+                'policyvalue': {
+                    required: 'Por favor ingrese un Valor'
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                if (element.attr('name') == 'fromdate' || element.attr('name') == 'todate')
+                    error.insertAfter(element.closest('div'));
+                else
+                    error.insertAfter(element);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+
+    $(function () {
+        $('#addprofileandvalue').click(function () {
+            if (document.getElementById('selectprofile').selectedIndex == 0) {
+                $("#create").validate().element('#selectprofile');
+                return false;
+            };
+            if (document.getElementById('selectprofilevalue').selectedIndex == 0) {
+                $('#create').validate().element('#selectprofilevalue');
+                return false;
+            };
+            document.getElementById('profilestable').hidden = false;
+            var profile = document.getElementById('selectprofile');
+            var profiletext = profile.options[profile.selectedIndex].text;
+            var profilevalue = document.getElementById('selectprofilevalue');
+            var profilevaluetext = profilevalue.options[profilevalue.selectedIndex].text;
+            $('#profilestable > tbody').append('<tr id="profilestablerow' + profilescounter + '">' +
+                '<td>' +
+                profiletext +
+                '<input hidden name="Profile[' + profilescounter + ']" value="' + selectprofile.value + '"/>' +
+                '</td>' +
+                '<td>' +
+                profilevaluetext +
+                '<input hidden name="Profilevalue[' + profilescounter + ']" value="' + selectprofilevalue.value + '"/>' +
+                '</td>' +
+                '<td class="text-right py-0 align-middle">' +
+                '<div class="btn-group btn-group-sm">' +
+                '<button type="button" class="btn btn-danger" onclick="removeprofilestableTr(' + profilescounter + ');"><i class="fas fa-trash"></i></button>' +
+                '</div>' +
+                '</td>' +
+                '</tr>');
+            profilescounter++;
+            document.getElementById('selectprofile').selectedIndex = 0;
+            document.getElementById('selectprofilevalue').selectedIndex = 0;
+            document.getElementById('profileadded').value = profilescounter;
+            return false;
+        });
+    });
+
+    function removeprofilestableTr(index) {
+        if (profilescounter > 1) {
+            $('#profilestablerow' + index).remove();
+            profilescounter--;
+        };
+        if (profilescounter == 1) {
+            document.getElementById('profilestable').hidden = true;
+            document.getElementById('profileadded').value = "";
+        };
+        return false;
+    }
+
+    $(function () {
+        $('#addpolicyandvalue').click(function () {
+            if (document.getElementById('selectpolicy').selectedIndex == 0) {
+                $("#create").validate().element('#selectpolicy');
+                return false;
+            };
+            if (document.getElementById('policyvalue').value == "") {
+                $('#create').validate().element('#policyvalue');
+                return false;
+            }
+            document.getElementById('policiestable').hidden = false;
+            var policy = document.getElementById('selectpolicy');
+            var policytext = policy.options[policy.selectedIndex].text;
+            $('#policiestable > tbody').append('<tr id="policiestablerow' + policiescounter + '">' +
+                '<td>' +
+                policytext +
+                '<input hidden name="Policy[' + policiescounter + ']" value="' + selectpolicy.value + '"/>' +
+                '</td>' +
+                '<td>' +
+                policyvalue.value +
+                '<input hidden name="Policyvalue[' + policiescounter + ']" value="' + policyvalue.value + '"/>' +
+                '</td>' +
+                '<td class="text-right py-0 align-middle">' +
+                '<div class="btn-group btn-group-sm">' +
+                '<button type="button" class="btn btn-danger" onclick="removepoliciestableTr(' + policiescounter + ');"><i class="fas fa-trash"></i></button>' +
+                '</div>' +
+                '</td>' +
+                '</tr>');
+            policiescounter++;
+            document.getElementById('selectpolicy').selectedIndex = 0;
+            document.getElementById('policyvalue').value = "";
+            document.getElementById('policyadded').value = policiescounter;
+            return false;
+        });
+    });
+
+    function removepoliciestableTr(index) {
+        if (policiescounter > 1) {
+            $('#policiestablerow' + index).remove();
+            policiescounter--;
+        };
+        if (policiescounter == 1) {
+            document.getElementById('policiestable').hidden = true;
+            document.getElementById('policyadded').value = "";
+        };
+        return false;
+    }
+
+    $(function () {
+        $('#validtodate').datetimepicker({
+            format: 'L'
+        })
+    });
+
+    $(function () {
+        $('#validfromdate').datetimepicker({
+            format: 'L'
+        })
+    });
+
+    </script>
+}

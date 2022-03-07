@@ -1,0 +1,228 @@
+﻿@model TSA.Infrastructure.ViewModels.UsersAndRolesVM
+@{
+    ViewData["Title"] = "Crear Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Usuarios</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Users" asp-action="Index">Listado de Usuarios</a></li>
+                    <li class="breadcrumb-item active">Crear Usuario</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <form method="post" asp-action="Create" id="create">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Crear un Usuario</h3>
+            </div>
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="User.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" name="User.Name" id="User.Name" placeholder="Ingrese el Nombre" asp-for="User.Name" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="User.Email"></label>
+                    </div>
+                    <div class="col-8">
+                        <input type="email" name="User.Email" id="User.Email" placeholder="Ingrese el Email" asp-for="User.Email" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label>Contrase&ntilde;a</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="input-group" id="show_hide_confirmpassword">
+                            <input name="User.Password" id="User.Password" type="password" asp-for="User.Password" class="form-control" placeholder="Ingrese la Contrase&ntilde;a">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <a href=""><i class="fa fa-eye-slash" aria-hidden="true" style="color:black"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label>Confirmar Contrase&ntilde;a</label>
+                    </div>
+                    <div class="col-8">
+                        <div class="input-group" id="show_hide_password">
+                            <input name="User.ConfirmPassword" id="User.ConfirmPassword" type="password" class="form-control" placeholder="Confirme la Contrase&ntilde;a">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <a href=""><i class="fa fa-eye-slash" aria-hidden="true" style="color:black"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="RolesList">Rol de Seguridad</label>
+                    </div>
+                    <div class="col-8">
+                        <select name="roleid" id="roleid" asp-for="RoleId" class="form-control">
+                            <option value="">Seleccione un Rol</option>
+                            @foreach (var item in Model.RolesList)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        &nbsp;
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#show_hide_password a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_password input').attr("type") == "text") {
+                    $('#show_hide_password input').attr('type', 'password');
+                    $('#show_hide_password i').addClass("fa-eye-slash");
+                    $('#show_hide_password i').removeClass("fa-eye");
+                } else if ($('#show_hide_password input').attr("type") == "password") {
+                    $('#show_hide_password input').attr('type', 'text');
+                    $('#show_hide_password i').removeClass("fa-eye-slash");
+                    $('#show_hide_password i').addClass("fa-eye");
+                }
+            });
+            $("#show_hide_confirmpassword a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_confirmpassword input').attr("type") == "text") {
+                    $('#show_hide_confirmpassword input').attr('type', 'password');
+                    $('#show_hide_confirmpassword i').addClass("fa-eye-slash");
+                    $('#show_hide_confirmpassword i').removeClass("fa-eye");
+                } else if ($('#show_hide_confirmpassword input').attr("type") == "password") {
+                    $('#show_hide_confirmpassword input').attr('type', 'text');
+                    $('#show_hide_confirmpassword i').removeClass("fa-eye-slash");
+                    $('#show_hide_confirmpassword i').addClass("fa-eye");
+                }
+            });
+        });
+
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Created") {
+                $(document).Toasts('create', {
+                class: 'bg-success',
+                title: 'Usuario',
+                subtitle: 'Creación',
+                body: 'El Usuario ha sido creado.',
+                autohide: true,
+                delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Usuario',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+        $(function () {
+            $('#create').validate({
+                rules: {
+                    'User.Name': {
+                        required: true,
+                        maxlength: 50
+                    },
+                    'User.Email': {
+                        required: true,
+                        email: true,
+                    },
+                    'User.Password': {
+                        required: true,
+                        minlength: 5
+                    },
+                    'User.ConfirmPassword': {
+                        required: true,
+                        equalTo: "#User\\.Password"
+                    },
+                    roleid: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    'User.Name': {
+                        required: "Por favor ingrese el Nombre",
+                        maxlength: "El Nombre no debe exceder los 50 caracteres"
+                    },
+                    'User.Email': {
+                        required: "Por favor ingrese el Email",
+                        email: "Por favor ingrese un Email válido"
+                    },
+                    'User.Password': {
+                        required: "Por favor ingrese la contraseña",
+                        minlength: "La contraseña debe tener al menos 5 caracteres"
+                    },
+                    'User.ConfirmPassword': {
+                        required: "Las contraseñas deben coincidir",
+                        equalTo:"Las contraseñas deben coincidir"
+                    },
+                    roleid: {
+                        required: "Por favor seleccione un Rol de Seguridad"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    if (element.attr('name') == 'User.Password' || element.attr('name') == 'User.ConfirmPassword')
+                        error.insertAfter(element.closest('div'));
+                    else
+                        error.insertAfter(element);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');  
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                    $(element).addClass('is-valid');
+                }
+            });
+        });
+    </script>
+}

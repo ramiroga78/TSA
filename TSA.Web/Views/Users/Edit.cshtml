@@ -1,0 +1,159 @@
+﻿@model TSA.Infrastructure.ViewModels.UsersAndRolesVM
+@{
+    ViewData["Title"] = "Editar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Usuarios</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Users" asp-action="Index">Listado de Usuarios</a></li>
+                    <li class="breadcrumb-item active">Editar Usuario</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <form method="post" asp-action="Edit" id="edit">
+        <input type="hidden" asp-for="User.Id" />
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Editar un Usuario</h3>
+            </div>
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="User.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" name="User.Name" id="User.Name" placeholder="Ingrese el Nombre" asp-for="User.Name" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="User.Email"></label>
+                    </div>
+                    <div class="col-8">
+                        <input type="email" name="User.Email" id="User.Email" placeholder="Ingrese el Email" asp-for="User.Email" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="RolesList">Rol de Seguridad</label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="RoleId" class="form-control">
+                            <option value="0">Seleccione un Rol</option>
+                            @foreach (var item in Model.RolesList)
+                            {
+                                if (item.Value == Model.RoleId.ToString())
+                                {
+                                    <option selected value="@item.Value">@item.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 text-center">    
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary" asp-route-id="User.Id">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts{
+    <script>
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Edited") {
+                $(document).Toasts('create', {
+                class: 'bg-success',
+                title: 'Usuario',
+                subtitle: 'Edición',
+                body: 'El Usuario ha sido editado.',
+                autohide: true,
+                delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Usuario',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+        $(function () {
+            $('#edit').validate({
+                rules: {
+                    'User.Name': {
+                        required: true,
+                        maxlength: 50
+                    },
+                    'User.Email': {
+                        required: true,
+                        email: true,
+                    },
+                    roleid: {
+                        required: true,
+                    }
+                },
+                messages: {
+                    'User.Name': {
+                        required: "Por favor ingrese el Nombre",
+                        maxlength: "El Nombre no debe exceder los 50 caracteres"
+                    },
+                    'User.Email': {
+                        required: "Por favor ingrese el Email",
+                        email: "Por favor ingrese un Email válido"
+                    },
+                    roleid: {
+                        required: "Por favor seleccione un Rol de Seguridad"
+                    }
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    error.insertAfter(element.closest('input'));
+                    error.insertAfter(element.closest('select'));
+                    @* element.closest('.form-group').append(error);*@
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                    $(element).addClass('is-valid');
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,54 @@
+﻿@model TSA.Infrastructure.DTOs.PolicyTypeDTO
+
+@{
+    ViewData["Title"] = "Ver Policy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Policies</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="PolicyType" asp-action="Index">Listado de Policies</a></li>
+                    <li class="breadcrumb-item active">Ver Policy</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Ver Policy</h3>
+        </div>
+        <div class="card-body">
+            @if (!Html.ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                    @Html.ValidationSummary()
+                </div>
+            }
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="@Model.Description"></label>
+                </div>
+                <div class="col-8">
+                    <input readonly asp-for="@Model.Description" name="Description" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-12 text-center">
+                    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,95 @@
+﻿@model TSA.Infrastructure.DTOs.DeltaUserDTO
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Usuarios de Deltas</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Delta" asp-action="Index">Deltas</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Delta" asp-action="DeltaUser" asp-route-id="@Model.DeltaId">Listado de usuarios por Delta</a></li>
+                    <li class="breadcrumb-item active">Editar usuario</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <form asp-controller="DElta" asp-action="EditDeltaUser" method="post" id="quickForm">
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label>Nombre</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="hidden" asp-for="@Model.DeltaId" value="@Model.DeltaId" />
+                        <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
+                        <select name="UserId" id="UserId" class="form-control">
+                            <option value="@Model.UserId">@Model.Name</option>
+                            @foreach (var item in ViewBag.AllUserByDelta)
+                            {
+                                if (item.UserId != Model.UserId)
+                                {
+                                    <option value="@item.UserId">@item.Name</option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 text-center">
+                        <a asp-action="DeltaUser" asp-controller="Delta" asp-route-id="@Model.DeltaId" class="btn btn-secondary">Cancelar</a>
+                        &nbsp;
+                        <button type="submit" class="btn btn-success">Editar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<!-- /.content -->
+
+@section Scripts{
+    <script>
+
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    UserId: {
+                        required: true
+                    },
+                },
+                messages: {
+                    UserId: {
+                        required: "Seleccione una opción"
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+
+    </script>
+}

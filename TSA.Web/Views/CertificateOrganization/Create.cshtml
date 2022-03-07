@@ -1,0 +1,190 @@
+﻿@using TSA.Infrastructure.DTOs
+@model CertificateOrganizationDTO
+
+@{
+    ViewData["Title"] = "Crear Organización";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Organizaciones</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="CertificateOrganization" asp-action="Index">Listado de Organizaciones</a></li>
+                    <li class="breadcrumb-item active">Crear Organizaci&oacute;n</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <form asp-page-handler="Create" method="post" id="quickForm">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Crear Organizaci&oacute;n</h3>
+            </div>
+            <div class="card-body">
+                @if (!Html.ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+
+                        @Html.ValidationSummary()
+                    </div>
+                }
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="@Model.CertificateOrganizationTypeId"></label>
+                    </div>
+                    <div class="col-8">
+                        <select id="CertificateOrganizationTypeId" name="CertificateOrganizationTypeId" class="form-control">
+                            @if (Model.CertificateOrganizationTypeId < 1)
+                            {
+                                <option selected disabled value="">Seleccione un Tipo</option>
+                            }
+                            @foreach (var item in Model.CertificateOrganizationTypes)
+                            {
+                                @if (!item.Id.Equals(Model.CertificateOrganizationTypeId))
+                                {
+                                    <option value="@item.Id">@item.Description</option>
+                                }
+                                else
+                                {
+                                    <option selected value="@item.Id">@item.Description</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="@Model.CommonName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="@Model.CommonName" class="form-control" name="commonName" placeholder="Ingrese el Common Name">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="@Model.OrganizationName"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="@Model.OrganizationName" class="form-control" name="OrganizationName" placeholder="Ingrese el Nombre de la Organización">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="@Model.CountryList"></label>
+                    </div>
+                    <div class="col-8">
+                        <select id="CountryName" name="CountryName" class="form-control">
+                            @if (Model.CountryName == null)
+                            {
+                                <option selected disabled value="">Seleccione un Pa&iacute;s</option>
+                            }
+                            @foreach (var item in Model.CountryList.OrderBy(n => n))
+                            {
+                                @if (!item.Equals(Model.CountryName))
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                                else
+                                {
+                                    <option selected>@Model.CountryName</option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-body -->
+        <div class="form-group row">
+            <div class="col-12 text-center">
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                &nbsp;
+                <button type="submit" class="btn btn-success">Crear</button>
+            </div>
+        </div>
+    </form>
+</section>
+
+@section Scripts{
+    <script>
+        $(window).on("load", function () {
+            if ('@TempData["message"]' == "Created") {
+                $(document).Toasts('create', {
+                    class: 'bg-success',
+                    title: 'Organización',
+                    subtitle: '',
+                    body: 'La Organización ha sido creado.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+            if ('@TempData["message"]' == "Error") {
+                $(document).Toasts('create', {
+                    class: 'bg-danger',
+                    title: 'Organización',
+                    subtitle: 'Error',
+                    body: 'Ha ocurrido un error al procesar la solicitud.',
+                    autohide: true,
+                    delay: 3000
+                })
+            }
+        });
+
+        $(function () {
+            $('#quickForm').validate({
+                rules: {
+                    commonName: {
+                        required: true,
+                        minlength: 2
+                    },
+                    OrganizationName: {
+                        required: true
+                    },
+                    CertificateOrganizationTypeId: {
+                        required: true
+                    },
+                    CountryName: {
+                        required: true
+                    },
+                },
+                messages: {
+                    commonName: {
+                        required: "Por favor, ingrese un CommonName",
+                        minlength: "Ingrese mínimo 2 letras"
+                    },
+                    OrganizationName: {
+                        required: "Por favor, ingrese el nombre de una organización"
+                    },
+                    CertificateOrganizationTypeId: {
+                        required: "Seleccione una opción"
+                    },
+                    CountryName: {
+                        required: "Seleccione una opción"
+                    },
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    error.insertAfter(element.closest(element));
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+    </script>
+}
